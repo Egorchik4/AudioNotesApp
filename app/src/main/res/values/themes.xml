@@ -12,5 +12,33 @@
 		<!-- Status bar color. -->
 		<item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 		<!-- Customize your theme here. -->
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
 	</style>
+
+
+
+	<style name="IconPlayPauseToggleButton">
+		<item name="android:textOn">@null</item>
+		<item name="android:textOff">@null</item>
+		<item name="android:background">@drawable/ic_play_</item>
+	</style>
+
+	<style name="IconMicroToggleButton" parent="IconPlayPauseToggleButton">
+		<item name="android:background">@drawable/ic_micro_on_off</item>
+	</style>
+
+	<style name="CardViewBackground" parent="Widget.MaterialComponents.CardView">
+		<item name="cardBackgroundColor">@color/greyCardView</item>
+		<item name="cardCornerRadius">14dp</item>
+		<item name="android:layout_marginStart">10dp</item>
+		<item name="android:layout_marginEnd">10dp</item>
+		<item name="android:layout_marginTop">10dp</item>
+		<item name="android:layout_marginBottom">10dp</item>
+	</style>
+
+	<style name="progressBarStyle" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+		<item name="android:indeterminateDrawable">@drawable/ic_progress_bar</item>
+	</style>
+
 </resources>
