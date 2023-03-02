@@ -1,8 +1,10 @@
 package com.example.audionotesapp.domain.usecase
 
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import com.example.audionotesapp.domain.model.AudioModel
 import java.io.File
+import java.util.Date
 import javax.inject.Inject
 
 class DirectoryAudioUseCase @Inject constructor(val context: Context) {
@@ -27,14 +29,30 @@ class DirectoryAudioUseCase @Inject constructor(val context: Context) {
 				audioList.add(
 					index,
 					AudioModel(
+						id = index,
 						directory = file.path,
 						name = file.name,
-						data = "1.03.2023",
-						time = "3:02"
+						data = Date(file.lastModified()).toString(),
+						time = getDurationOfAudio(file.absolutePath)
 					)
 				)
 			}
 		}
 		return audioList
+	}
+
+	private fun getCreationDataOfAudio() {
+
+	}
+
+	private fun getDurationOfAudio(pathAudio: String): String {
+		val mmr = MediaMetadataRetriever()
+		mmr.setDataSource(pathAudio)
+		val duration: String = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+		mmr.release()
+		val millSecond = Integer.parseInt(duration)
+		val minutes: Int = millSecond / 60000
+		val second: Int = (millSecond % 60000) / 1000
+		return "$minutes:$second"
 	}
 }

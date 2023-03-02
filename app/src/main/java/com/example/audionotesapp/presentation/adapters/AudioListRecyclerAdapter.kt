@@ -29,11 +29,11 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 
 	override fun onBindViewHolder(holder: AudioListHolder, position: Int) {
 		holder.bind(audioList[position])
-		holder.binding.imageViewPlayPause.setOnClickListener {
-			if (holder.binding.imageViewPlayPause.isActivated) {
-				onClickListener.start(position)
+		holder.binding.buttonPlayPause.setOnCheckedChangeListener { buttonView, isChecked ->
+			if (isChecked) {
+				onClickListener.startAudio(audioList[position].id)
 			} else {
-				onClickListener.stop()
+				onClickListener.stopAudio()
 			}
 		}
 	}

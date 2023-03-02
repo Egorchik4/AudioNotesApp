@@ -3,9 +3,7 @@ package com.example.audionotesapp.presentation.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
@@ -41,31 +39,20 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 			recyclerAdapter.actualListAudio(it)
 		}
 
-		binding.buttonMicro.setOnTouchListener(object : View.OnTouchListener {
-			override fun onTouch(v: View, event: MotionEvent): Boolean {
-				when (event.action) {
-					MotionEvent.ACTION_DOWN -> {
-						Log.e("eee", "ACTION_DOWN")
-						viewModel.startRecording()
-					}
-
-					MotionEvent.ACTION_UP   -> {
-						v.performClick()
-						Log.e("eee", "ACTION_UP")
-						viewModel.stopRecording()
-					}
-				}
-				return true
+		binding.buttonMicro.setOnCheckedChangeListener { buttonView, isChecked ->
+			if (isChecked) {
+				viewModel.startRecording()
+			} else {
+				viewModel.stopRecording()
 			}
-
-		})
+		}
 	}
 
-	override fun start(id: Int) {
+	override fun startAudio(id: Int) {
 		viewModel.playAudio(id)
 	}
 
-	override fun stop() {
+	override fun stopAudio() {
 		viewModel.stopAudio()
 	}
 
