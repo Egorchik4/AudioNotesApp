@@ -35,8 +35,13 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 		binding.recyclerAdapter.layoutManager = LinearLayoutManager(requireContext())
 		binding.recyclerAdapter.adapter = recyclerAdapter
 
-		viewModel.listAudio.observe(viewLifecycleOwner) {
+
+		viewModel.listAudioLive.observe(viewLifecycleOwner) {
 			recyclerAdapter.actualListAudio(it)
+		}
+
+		viewModel.audioLive.observe(viewLifecycleOwner){
+			recyclerAdapter.refreshItem(it)
 		}
 
 		binding.buttonMicro.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -52,8 +57,8 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 		viewModel.playAudio(id)
 	}
 
-	override fun stopAudio() {
-		viewModel.stopAudio()
+	override fun stopAudio(id: Int) {
+		viewModel.stopAudio(id)
 	}
 
 	private fun checkPermissions() {
