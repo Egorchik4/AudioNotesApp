@@ -2,12 +2,13 @@ package com.example.audionotesapp.domain.usecase
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import com.example.audionotesapp.domain.model.AudioModel
 import java.io.File
 import java.util.Date
 import javax.inject.Inject
 
-class DirectoryAudioUseCase @Inject constructor(val context: Context) {
+class DirectoryAudioUseCase @Inject constructor(val context: Context, val mmr: MediaMetadataRetriever) {
 
 	private val audioDirectory: String = context.cacheDir.toString() + "/audio"
 	val audioList: MutableList<AudioModel> = mutableListOf()
@@ -33,7 +34,8 @@ class DirectoryAudioUseCase @Inject constructor(val context: Context) {
 						directory = file.path,
 						name = file.name,
 						data = Date(file.lastModified()).toString(),
-						time = getDurationOfAudio(file.absolutePath)
+						timeOfDuration = convertDurationOfAudio(getDurationOfAudio(file.absolutePath)),
+						maxOfDuration = getDurationOfAudio(file.absolutePath)
 					)
 				)
 			}
@@ -45,12 +47,16 @@ class DirectoryAudioUseCase @Inject constructor(val context: Context) {
 
 	}
 
-	private fun getDurationOfAudio(pathAudio: String): String {
-		val mmr = MediaMetadataRetriever()
-		mmr.setDataSource(pathAudio)
-		val duration: String = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
-		mmr.release()
-		val millSecond = Integer.parseInt(duration)
+	private fun getDurationOfAudio(pathAudio: String): Int {
+		var duration = ""
+		mmr.apply {
+			setDataSource(pathAudio)
+			duration = extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+		}
+		return Integer.parseInt(duration)
+	}
+
+	fun convertDurationOfAudio(millSecond: Int): String{
 		val minutes: Int = millSecond / 60000
 		val second: Int = (millSecond % 60000) / 1000
 		return "$minutes:$second"

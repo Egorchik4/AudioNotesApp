@@ -5,5 +5,6 @@ data class AudioModel(
 	val directory: String,
 	val name: String,
 	val data: String,
-	val time: String
-	)
+	val timeOfDuration: String,
+	val maxOfDuration: Int
+)
