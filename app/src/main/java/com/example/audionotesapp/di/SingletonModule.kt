@@ -4,6 +4,10 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import com.example.audionotesapp.data.datasource.DataSource
+import com.example.audionotesapp.data.datasource.DataSourceImpl
+import com.example.audionotesapp.data.repository.DirectoryRepositoryImpl
+import com.example.audionotesapp.domain.repository.DirectoryRepository
 import com.example.audionotesapp.domain.usecase.AudioPlayerUseCase
 import com.example.audionotesapp.domain.usecase.DirectoryAudioUseCase
 import dagger.Module
@@ -19,31 +23,43 @@ class SingletonModule {
 
 	@Provides
 	@Singleton
+	fun provideDataSource(@ApplicationContext context: Context, mmr: MediaMetadataRetriever): DataSource {
+		return DataSourceImpl(context, mmr)
+	}
+
+	@Provides
+	@Singleton
+	fun provideDirectoryRepository(dataSource: DataSource): DirectoryRepository {
+		return DirectoryRepositoryImpl(dataSource)
+	}
+
+	@Provides
+	@Singleton
+	fun provideDirectoryAudioUseCase(directoryRepository: DirectoryRepository): DirectoryAudioUseCase {
+		return DirectoryAudioUseCase(directoryRepository)
+	}
+
+	@Provides
+	@Singleton
 	fun provideAudioPlayer(mediaRecorder: MediaRecorder, mediaPlayer: MediaPlayer): AudioPlayerUseCase {
 		return AudioPlayerUseCase(mediaRecorder, mediaPlayer)
 	}
 
 	@Provides
 	@Singleton
-	fun provideDirectory(@ApplicationContext context: Context, mmr: MediaMetadataRetriever): DirectoryAudioUseCase {
-		return DirectoryAudioUseCase(context, mmr)
-	}
-
-	@Provides
-	@Singleton
-	fun provideMediaRecorder(): MediaRecorder{
+	fun provideMediaRecorder(): MediaRecorder {
 		return MediaRecorder()
 	}
 
 	@Provides
 	@Singleton
-	fun provideMediaPlayer(): MediaPlayer{
+	fun provideMediaPlayer(): MediaPlayer {
 		return MediaPlayer()
 	}
 
 	@Provides
 	@Singleton
-	fun provideMediaMetadataRetriever(): MediaMetadataRetriever{
+	fun provideMediaMetadataRetriever(): MediaMetadataRetriever {
 		return MediaMetadataRetriever()
 	}
 
