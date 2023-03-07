@@ -7,4 +7,5 @@
 	<string name="textTime">2:34</string>
 	<string name="textTimeActual">1:23</string>
 	<string name="textSlash">/</string>
+	<string name="textEmpty"></string>
 </resources>

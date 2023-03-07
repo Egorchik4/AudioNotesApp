@@ -1,7 +1,5 @@
 package com.example.audionotesapp.presentation.adapters
 
-import android.opengl.Visibility
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,24 +18,26 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 
 		val binding = AudioFileItemBinding.bind(item)
 		fun bind(audioState: AudioItemState) {
-			when (audioState){
+			when (audioState) {
 				is AudioItemState.Stop -> {
 					binding.progressBar.visibility = View.INVISIBLE
 					binding.textSlash.visibility = View.INVISIBLE
-					binding.textTimeActual.visibility = View.INVISIBLE
+					binding.textTimeActual.text =
+						binding.textTimeActual.context.getString(R.string.textEmpty)
 					binding.buttonPlayPause.background =
-						AppCompatResources.getDrawable(binding.buttonPlayPause.context,R.drawable.ic_play_)
+						AppCompatResources.getDrawable(binding.buttonPlayPause.context, R.drawable.ic_play_)
 					binding.progressBar.progress = 0
 					binding.textNameAudio.text = audioState.model.name
 					binding.textDataAudio.text = audioState.model.data
 					binding.textTime.text = audioState.model.timeOfDuration
 					binding.progressBar.max = audioState.model.maxOfDuration
 				}
-				is AudioItemState.Play ->{
+
+				is AudioItemState.Play -> {
 					binding.progressBar.visibility = View.VISIBLE
 					binding.textSlash.visibility = View.VISIBLE
 					binding.buttonPlayPause.background =
-						AppCompatResources.getDrawable(binding.buttonPlayPause.context,R.drawable.ic_pause_)
+						AppCompatResources.getDrawable(binding.buttonPlayPause.context, R.drawable.ic_pause_)
 					binding.progressBar.progress = audioState.actualInt
 					binding.textTimeActual.text = audioState.actualTime
 					binding.textNameAudio.text = audioState.model.name
@@ -57,9 +57,9 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 	override fun onBindViewHolder(holder: AudioListHolder, position: Int) {
 		holder.bind(audioList[position])
 		holder.binding.buttonPlayPause.setOnClickListener {
-			if(isChecked){
+			if (isChecked) {
 				onClickListener.stopAudio(position)
-			}else{
+			} else {
 				onClickListener.startAudio(position)
 			}
 		}
@@ -75,14 +75,15 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 		}
 	}
 
-	fun refreshItem(state: AudioItemState){
-		when(state){
-			is AudioItemState.Play ->{
+	fun refreshItem(state: AudioItemState) {
+		when (state) {
+			is AudioItemState.Play -> {
 				audioList[state.model.id] = state
 				isChecked = true
 				notifyItemChanged(state.model.id)
 			}
-			is AudioItemState.Stop ->{
+
+			is AudioItemState.Stop -> {
 				audioList[state.model.id] = state
 				isChecked = false
 				notifyItemChanged(state.model.id)
