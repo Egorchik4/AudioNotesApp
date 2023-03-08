@@ -26,4 +26,8 @@ class DirectoryAudioUseCase @Inject constructor(private val directoryRepository:
 	fun convertDurationToTime(time: Int): String {
 		return directoryRepository.convertDurationToTime(time)
 	}
+
+	fun destroy() {
+		directoryRepository.destroy()
+	}
 }

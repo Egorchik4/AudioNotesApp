@@ -2,12 +2,7 @@ package com.example.audionotesapp.domain.usecase
 
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class AudioPlayerUseCase @Inject constructor(var recorder: MediaRecorder, var player: MediaPlayer) {
@@ -37,10 +32,10 @@ class AudioPlayerUseCase @Inject constructor(var recorder: MediaRecorder, var pl
 	}
 
 	fun startPlaying(directoryOfAudio: String) {
-		if(directoryAudio == directoryOfAudio && player.duration != player.currentPosition) {
+		if (directoryAudio == directoryOfAudio && player.duration != player.currentPosition + 20) {
 			player.seekTo(player.currentPosition)
 			player.start()
-		}else{
+		} else {
 			resetPlaying()
 			player.apply {
 				try {
@@ -55,19 +50,24 @@ class AudioPlayerUseCase @Inject constructor(var recorder: MediaRecorder, var pl
 		directoryAudio = directoryOfAudio
 	}
 
-	fun getCurrentPositionOfPlayer(): Int{
-		return if(player.isPlaying){
+	fun getCurrentPositionOfPlayer(): Int {
+		return if (player.isPlaying) {
 			player.currentPosition
-		}else{
+		} else {
 			0
 		}
 	}
 
-	fun stopPlaying(directoryOfAudio: String) {
+	fun stopPlaying() {
 		player.pause()
 	}
 
-	private fun resetPlaying(){
+	private fun resetPlaying() {
 		player.reset()
+	}
+
+	fun destroyPlayer() {
+		player.release()
+		recorder.release()
 	}
 }

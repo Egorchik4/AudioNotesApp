@@ -2,13 +2,14 @@ package com.example.audionotesapp.data.datasource
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import com.example.audionotesapp.domain.model.AudioModel
 import java.io.File
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
-class DataSourceImpl @Inject constructor(val context: Context, val mmr: MediaMetadataRetriever) : DataSource {
+class DataSourceImpl @Inject constructor(val context: Context, private val mmr: MediaMetadataRetriever, private val calendar: Calendar) : DataSource {
 
 	private val audioDirectory: String = context.cacheDir.toString() + "/audio"
 	private val audioList: MutableList<AudioModel> = mutableListOf()
@@ -19,7 +20,8 @@ class DataSourceImpl @Inject constructor(val context: Context, val mmr: MediaMet
 		if (!photoDirectory.isDirectory) {
 			photoDirectory.mkdir()
 		}
-		return photoDirectory.toString() + "/AudioFile ${audioList.size}"
+		val data = SimpleDateFormat("ss", Locale.getDefault()).format(calendar.time)
+		return "$photoDirectory/AudioFile $data"
 	}
 
 	override fun getNameToNewFile(): String {
@@ -41,27 +43,30 @@ class DataSourceImpl @Inject constructor(val context: Context, val mmr: MediaMet
 	override fun refreshAudioList(newFile: String) {
 		audioList.forEachIndexed { index, audioModel ->
 			if (audioModel.directory == newFile) {
-				Log.e("eee", "delete")
 				audioList.removeAt(index)
+				removeFromDirectory(newFile)
 				return
 			}
 		}
-		Log.e("eee", "rrrrr")
-		val audio = File(newFile)
+		val file = File(newFile)
 		audioList.add(
 			AudioModel(
 				id = audioList.size,
-				directory = audio.path,
-				name = audio.name,
-				data = Date(audio.lastModified()).toString(),
-				timeOfDuration = convertDurationOfAudio(getDurationOfAudio(audio.absolutePath)),
-				maxOfDuration = getDurationOfAudio(audio.absolutePath)
+				directory = file.path,
+				name = file.name,
+				data = setData(file),
+				timeOfDuration = convertDurationOfAudio(getDurationOfAudio(file.absolutePath)),
+				maxOfDuration = getDurationOfAudio(file.absolutePath)
 			)
 		)
 	}
 
 	override fun convertDurationToTime(time: Int): String {
 		return convertDurationOfAudio(time)
+	}
+
+	override fun destroy() {
+		mmr.release()
 	}
 
 	private fun getAudioModelListFromDirectory(): MutableList<AudioModel> {
@@ -76,7 +81,7 @@ class DataSourceImpl @Inject constructor(val context: Context, val mmr: MediaMet
 						id = index,
 						directory = file.path,
 						name = file.name,
-						data = Date(file.lastModified()).toString(),
+						data = setData(file),
 						timeOfDuration = convertDurationOfAudio(getDurationOfAudio(file.absolutePath)),
 						maxOfDuration = getDurationOfAudio(file.absolutePath)
 					)
@@ -99,5 +104,15 @@ class DataSourceImpl @Inject constructor(val context: Context, val mmr: MediaMet
 		val minutes: Int = millSecond / 60000
 		val second: Int = (millSecond % 60000) / 1000
 		return "$minutes:$second"
+	}
+
+	private fun setData(file: File): String {
+		calendar.timeInMillis = file.lastModified()
+		return SimpleDateFormat("dd/M/yyyy hh:mm", Locale.getDefault()).format(calendar.time)
+	}
+
+	private fun removeFromDirectory(pathFile: String) {
+		val file = File(pathFile)
+		file.delete()
 	}
 }

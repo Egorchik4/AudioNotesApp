@@ -6,6 +6,7 @@
 	android:background="@color/white">
 
 	<androidx.cardview.widget.CardView
+		android:id="@+id/cardView"
 		style="@style/CardViewBackground"
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"

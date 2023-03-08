@@ -44,9 +44,15 @@ class MainViewModel @Inject constructor(
 	}
 
 	fun stopAudio(id: Int) {
+		audioPlayerUseCase.stopPlaying()
 		val fileName = directoryAudioUseCase.getAudioFromId(id)
-		audioPlayerUseCase.stopPlaying(fileName.directory)
 		setStateProgressBar(fileName)
+	}
+
+	fun deleteAudio(id: Int) {
+		val fileName = directoryAudioUseCase.getAudioFromId(id)
+		directoryAudioUseCase.refreshAudioList(fileName.directory)
+		listAudioMut.value = directoryAudioUseCase.getAudioModelListState()
 	}
 
 	private fun setStateProgressBar(model: AudioModel) {
@@ -62,9 +68,14 @@ class MainViewModel @Inject constructor(
 					)
 				)
 			}
-			audioPlayerUseCase.stopPlaying(model.directory)
+			audioPlayerUseCase.stopPlaying()
 			audioMut.postValue(AudioItemState.Stop(model))
 		}
+	}
+
+	fun destroy() {
+		audioPlayerUseCase.destroyPlayer()
+		directoryAudioUseCase.destroy()
 	}
 
 	init {

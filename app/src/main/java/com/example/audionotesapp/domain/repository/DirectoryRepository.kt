@@ -15,4 +15,5 @@ interface DirectoryRepository {
 
 	fun convertDurationToTime(time: Int): String
 
+	fun destroy()
 }
