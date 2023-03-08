@@ -58,20 +58,27 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 		holder.bind(audioList[position])
 		holder.binding.buttonPlayPause.setOnClickListener {
 			if (isChecked) {
-				onClickListener.stopAudio(position)
+				onClickListener.stopAudio(holder.adapterPosition)
 			} else {
-				onClickListener.startAudio(position)
+				onClickListener.startAudio(holder.adapterPosition)
 			}
+		}
+		holder.binding.cardView.setOnLongClickListener {
+			onClickListener.deleteAudio(holder.adapterPosition)
+			true
 		}
 	}
 
 	override fun getItemCount(): Int = audioList.size
 
 	fun actualListAudio(list: MutableList<AudioItemState>) {
-		list.forEach {
-			if (!audioList.contains(it)) {
-				addItem(it)
-			}
+		if (list.size > audioList.size) {
+			val difference = list.filterNot { audioList.contains(it) }
+			addItem(difference)
+		} else {
+			val difference = audioList.filterNot { list.contains(it) }
+			removeItem(difference)
+
 		}
 	}
 
@@ -91,8 +98,18 @@ class AudioListRecyclerAdapter(private val onClickListener: RecyclerItemOnClickL
 		}
 	}
 
-	private fun addItem(item: AudioItemState) {
-		audioList.add(item)
-		notifyItemInserted(itemCount)
+	private fun addItem(itemList: List<AudioItemState>) {
+		itemList.forEach {
+			audioList.add(it)
+			notifyItemInserted(itemCount)
+		}
+	}
+
+	private fun removeItem(itemList: List<AudioItemState>) {
+		itemList.forEach {
+			val position = audioList.indexOf(it)
+			audioList.remove(it)
+			notifyItemRemoved(position)
+		}
 	}
 }

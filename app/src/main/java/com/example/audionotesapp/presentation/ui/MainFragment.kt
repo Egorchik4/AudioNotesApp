@@ -40,7 +40,7 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 			recyclerAdapter.actualListAudio(it)
 		}
 
-		viewModel.audioLive.observe(viewLifecycleOwner){
+		viewModel.audioLive.observe(viewLifecycleOwner) {
 			recyclerAdapter.refreshItem(it)
 		}
 
@@ -61,6 +61,10 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 		viewModel.stopAudio(id)
 	}
 
+	override fun deleteAudio(id: Int) {
+		viewModel.deleteAudio(id)
+	}
+
 	private fun checkPermissions() {
 		if (
 			ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) !=
@@ -76,5 +80,10 @@ class MainFragment : Fragment(), RecyclerItemOnClickListener {
 				0
 			)
 		}
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		viewModel.destroy()
 	}
 }

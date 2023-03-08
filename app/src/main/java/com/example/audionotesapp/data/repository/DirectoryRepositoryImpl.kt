@@ -7,7 +7,6 @@ import com.example.audionotesapp.presentation.state.AudioItemState
 import javax.inject.Inject
 
 class DirectoryRepositoryImpl @Inject constructor(private val dataSource: DataSource) : DirectoryRepository {
-//	private val audioItemStateList = mutableListOf<AudioItemState>()
 
 	override fun getNameToNewFile(): String {
 		return dataSource.getNameToNewFile()
@@ -32,5 +31,9 @@ class DirectoryRepositoryImpl @Inject constructor(private val dataSource: DataSo
 
 	override fun convertDurationToTime(time: Int): String {
 		return dataSource.convertDurationToTime(time)
+	}
+
+	override fun destroy() {
+		dataSource.destroy()
 	}
 }

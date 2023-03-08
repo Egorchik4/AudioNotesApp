@@ -13,4 +13,6 @@ interface DataSource {
 	fun refreshAudioList(newFile: String)
 
 	fun convertDurationToTime(time: Int): String
+
+	fun destroy()
 }

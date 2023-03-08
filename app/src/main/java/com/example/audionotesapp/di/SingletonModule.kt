@@ -15,6 +15,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.Calendar
 import javax.inject.Singleton
 
 @Module
@@ -23,8 +24,8 @@ class SingletonModule {
 
 	@Provides
 	@Singleton
-	fun provideDataSource(@ApplicationContext context: Context, mmr: MediaMetadataRetriever): DataSource {
-		return DataSourceImpl(context, mmr)
+	fun provideDataSource(@ApplicationContext context: Context, mmr: MediaMetadataRetriever, calendar: Calendar): DataSource {
+		return DataSourceImpl(context, mmr, calendar)
 	}
 
 	@Provides
@@ -61,6 +62,12 @@ class SingletonModule {
 	@Singleton
 	fun provideMediaMetadataRetriever(): MediaMetadataRetriever {
 		return MediaMetadataRetriever()
+	}
+
+	@Provides
+	@Singleton
+	fun provideCalendar(): Calendar {
+		return Calendar.getInstance()
 	}
 
 }
